@@ -1,0 +1,13 @@
+{
+  "name": "tarbell-index",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "electron": "^33.2.1",
+    "pandas": "^0.0.3",
+    "sqlite3": "^5.1.7"
+  }
+}

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tarbell Index</title>
+</head>
+<body>
+  <h1>Tarbell Index</h1>
+  <input type="text" id="searchInput" placeholder="Search...">
+  <button id="searchButton">Search</button>
+  <div id="results"></div>
+
+  <script>
+    const DatabaseHelper = require('./database_helper.js');
+    const dbHelper = new DatabaseHelper();
+
+    const searchInput = document.getElementById('searchInput'); // Declaration outside the event listener
+    const searchButton = document.getElementById('searchButton');
+    const resultsDiv = document.getElementById('results');
+
+    searchButton.addEventListener('click', async () => {
+      const keyword = searchInput.value; // Use the existing searchInput variable
+      console.log(`Search button clicked with keyword: ${keyword}`);
+
+      try {
+        const results = await dbHelper.search(keyword);
+        console.log('Search results:', results);
+
+        // Display results in the resultsDiv (replace with your desired display logic)
+        resultsDiv.innerHTML = ''; // Clear previous results
+        results.forEach(row => {
+          const resultItem = document.createElement('div'); // Create a div to hold the result
+          resultItem.style.border = '1px solid #ccc'; // Add a border
+          resultItem.style.padding = '10px'; // Add some padding
+          resultItem.style.marginBottom = '5px'; // Add margin between results
+      
+          let rowText = '';
+          for (const key in row) {
+              rowText += `<strong>${key}:</strong> ${row[key]}<br>`; // Make keys bold
+          }
+          resultItem.innerHTML = rowText; // Use innerHTML to render the HTML
+          resultsDiv.appendChild(resultItem);
+      });
+      } catch (error) {
+        console.error('Error during search:', error);
+        // Display error message to the user
+        resultsDiv.innerHTML = '<p>An error occurred during the search.</p>';
+      }
+    });
+
+    // Load initial data 
+    dbHelper.getAllData().then(results => {
+      console.log('Initial data loaded:', results);
+      // Display results in the resultsDiv (replace with your desired display logic)
+      results.forEach(row => {
+        const resultItem = document.createElement('p');
+        resultItem.textContent = `${row.ID} - ${row.TITLE}: ${row.DESCRIPTION}`;
+        resultsDiv.appendChild(resultItem);
+      });
+    }).catch(error => {
+      console.error('Error loading initial data:', error);
+      // Display error message to the user
+      resultsDiv.innerHTML = '<p>An error occurred loading initial data.</p>';
+    });
+  </script>
+</body>
+</html>
